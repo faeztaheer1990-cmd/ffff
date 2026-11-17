@@ -1,6 +1,6 @@
 // Read-only MT5 bridge. No trade execution functions.
 #property strict
-#property version "1.01"
+#property version "1.02"
 
 input string ApiUrl = "https://company-api-production-28eb7e05.up.railway.app/api/mt5/tick";
 input string ApiToken = "PASTE_TOKEN_IN_EA_INPUTS";
@@ -9,7 +9,6 @@ input int SendIntervalSeconds = 5;
 
 string symbol_list[];
 
-// Forward declaration
 void SendTick(const string symbol, const MqlTick &tick);
 
 int OnInit()
@@ -55,7 +54,7 @@ void OnTimer()
 void SendTick(const string symbol, const MqlTick &tick)
 {
    string body = StringFormat(
-      "{\\"symbol\\":\\"%s\\",\\"bid\\":%.10f,\\"ask\\":%.10f,\\"time\\":%I64d}",
+      "{\"symbol\":\"%s\",\"bid\":%.10f,\"ask\":%.10f,\"time\":%I64d}",
       symbol, tick.bid, tick.ask, (long)tick.time
    );
 
@@ -66,7 +65,7 @@ void SendTick(const string symbol, const MqlTick &tick)
 
    char result[];
    string response_headers;
-   string headers = "Content-Type: application/json\\r\\nAuthorization: Bearer " + ApiToken + "\\r\\n";
+   string headers = "Content-Type: application/json\r\nAuthorization: Bearer " + ApiToken + "\r\n";
 
    ResetLastError();
    int http_code = WebRequest(
